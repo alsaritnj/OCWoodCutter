@@ -5,8 +5,6 @@ local trees = require("trees")
 local dm = require("distMatrix")
 local settings = require("settings")
 
-require("startUp")
-
 local distMatrix = {}
 
 
@@ -22,7 +20,16 @@ local distMatrix = {}
 -- end
 
 -- tests:
-startUp({x = 0,  y = 0, z = 0}, 0, 10, 10, settings, movement)
+
+if settings.area.x > settings.geolyzerRange * 2 or
+settings.area.y > settings.geolyzerRange * 2 or
+settings.area.x < 1 or settings.area.y < 1 then
+    print("error: unavaliable area")
+    return
+end
+
+settings.areaCenter = vectors.new2d(math.ceil(settings.area.x / 2), math.ceil(settings.area.y / 2))
+
 distMatrix = dm.new(settings.areaCenter)
 local trees = trees.getTreesInArea(movement.position, settings)
 print(movement.position.x)
