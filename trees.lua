@@ -24,8 +24,8 @@ function treeLib.getTreesInArea(position, settings)
     local xMin = math.max(position.x - settings.geolyzerRange, 0) - settings.areaCenter.x
     local zMin = math.max(position.z - settings.geolyzerRange, 0) - settings.areaCenter.y
 
-    local xMax = math.min(position.x + settings.geolyzerRange, settings.area.width) - settings.areaCenter.x
-    local zMax = math.min(position.z + settings.geolyzerRange, settings.area.height) - settings.areaCenter.y
+    local xMax = math.min(position.x + settings.geolyzerRange, settings.area.x) - settings.areaCenter.x
+    local zMax = math.min(position.z + settings.geolyzerRange, settings.area.y) - settings.areaCenter.y
 
     for x, rows in pairs(trees) do
         treesInArea[x] = {}
