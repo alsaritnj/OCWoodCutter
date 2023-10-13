@@ -1,6 +1,6 @@
-local sides = require("/lib/sides")
-local robot = require("/lib/robot")
-local vec = require("/lib/vectors")
+local sides = require("/lib/sides.lua")
+local vec = require("/lib/vectors.lua")
+local robot = getComponent("robot")
 
 local robomvmt = {}
 
@@ -32,36 +32,47 @@ end
 
 function robomvmt.turnRight()
     if robomvmt.dir == sides.back then
-        if robot.turn(true) then robomvmt.dir = sides.left return true, robomvmt.dir end
+        if robot.turn(true) then
+            robomvmt.dir = sides.left
+            return true, robomvmt.dir
+        end
     elseif robomvmt.dir == sides.right then
-        if robot.turn(true) then robomvmt.dir = sides.back return true, robomvmt.dir end
+        if robot.turn(true) then
+            robomvmt.dir = sides.back
+            return true, robomvmt.dir
+        end
     elseif robomvmt.dir == sides.front then
-        if robot.turn(true) then robomvmt.dir = sides.right return true, robomvmt.dir end
+        if robot.turn(true) then
+            robomvmt.dir = sides.right
+            return true, robomvmt.dir
+        end
     elseif robomvmt.dir == sides.left then
-        if robot.turn(true) then robomvmt.dir = sides.front return true, robomvmt.dir end
+        if robot.turn(true) then
+            robomvmt.dir = sides.front
+            return true, robomvmt.dir
+        end
     end
     return false
 end
 
-local function step(dir, breakBlocks, translateDir)
-    local translateDir = translateDir or robomvmt.dir
+local function step(dir, breakBlocks)
     local status, err = robot.move(sides[dir])
-    if not status then 
+    if status then 
         if breakBlocks then
             robot.swing(sides[dir])
         else
-            return false, i, err
+            return false, err
         end
     end
-    robomvmt.translate(vec.sides[translateDir])
+    robomvmt.translate(vec[dir]) 
     return true
 end
 
 function robomvmt.forward(dist, breakBlocks)
     dist = math.abs(dist) or 1
     for i = 1, dist do
-        status, dist, err = step("front", breakBlocks)
-        if not status then return status, dist, err end
+        status, err = step("front", breakBlocks)
+        if not status then return status, i, err end
     end
     return true, dist
 end
@@ -69,8 +80,8 @@ end
 function robomvmt.up(dist, breakBlocks)
     dist = math.abs(dist) or 1
     for i = 1, dist do
-        status, dist, err = step("up", breakBlocks, sides.up)
-        if not status then return status, dist, err end
+        status, err = step("up", breakBlocks)
+        if not status then return status, i, err end
     end
     return true, dist
 end
@@ -78,8 +89,8 @@ end
 function robomvmt.down(dist, breakBlocks)
     dist = math.abs(dist) or 1
     for i = 1, dist do
-        status, dist, err = step("down", breakBlocks, sides.down)
-        if not status then return status, dist, err end
+        status, err = step("down", breakBlocks)
+        if not status then return status, i, err end
     end
     return true, dist
 end
@@ -99,7 +110,6 @@ end
 
 function robomvmt.goCoords(pos, order, breakBlocks)
     order = order or "xyz"
-    if order:len() ~= 3 then return false, "Order should be of length 3" end
     local delta = vec.sub(pos, robomvmt.position)
     for dir in order:gmatch("%w") do
         local dist = delta[dir]

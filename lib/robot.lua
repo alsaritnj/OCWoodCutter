@@ -19,4 +19,4 @@ end
 
 robot.debug = {} -- TODO: Fill this with tests
 
-return robot;
+return robot

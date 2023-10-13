@@ -1,3 +1,5 @@
+local sides = require("/lib/sides.lua")
+local robot = getComponent("robot")
 local treeLib = {}
 
 function treeLib.getTrees()
@@ -61,14 +63,14 @@ function treeLib.getNearestTree(position, settings)
 end
 
 function treeLib.cut(movement)
-    movement.up(10, true)
-    movement.forward(1, true)
-    movement.down(10, true)
-    movement.turnLeft()
-    movement.turnLeft()
-    movement.forward()
-    movement.turnLeft()
-    movement.turnLeft()
+    local h = movement.position.y
+    while robot.detect(sides.front) do
+        movement.up(1, true)
+    end
+    for i = movement.position.y, h + 1, -1 do
+        movement.down(1, false)
+        robot.swing(sides.front)
+    end
     return true
 end
 
