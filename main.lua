@@ -4,7 +4,7 @@ require("startUp")
 require("fillDistMatrix")
 
 treeGrowingWaitingTime = 10;
-geolyserMaxRange = 5 -- default 32
+geolyserMaxRange = 10 -- default 32
 area = {}
 distMatrix = {}
 
@@ -25,12 +25,5 @@ end
 -- tests:
 startUp(0, 0, 0, 0, 10, 10)
 fillDistMatrix()
-local trees = getTreesInArea()
-print(movement.x)
-print(movement.z)
-print(area.widthCenter)
-for x, rows in pairs(trees) do
-    for z, _ in pairs(rows) do
-        print("x = " .. x .. " z = " .. z)
-    end
-end
+local tree = getNearestTree()
+print("x = " .. tree.x .. " z = " .. tree.z)

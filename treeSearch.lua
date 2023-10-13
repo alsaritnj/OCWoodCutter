@@ -1,3 +1,5 @@
+require("coordsTransform")
+
 function getTrees()
     local trees = {}
     trees[-7] = {}
@@ -9,7 +11,8 @@ function getTrees()
     trees[0][-1] = 1
     trees[0][3] = 1
     trees[0][10] = 1
-    --trees[3] = {}
+    trees[-4] = {}
+    trees[-4][-4] = 1
     --trees[6] = {}
     return trees
 end
@@ -43,13 +46,17 @@ function getNearestTree()
     nearestTree = {}
     for x, rows in pairs(trees) do
         for z, _ in pairs(rows) do
+            local treeRelative = transformToRelative(x, z)
             if (not nearestTree.x or not nearestTree.z) 
-                or (distMatrix[x][z] < distMatrix[nearestTree.x][nearestTree.z]) then
+                or (distMatrix[treeRelative.x][treeRelative.z] < 
+                distMatrix[nearestTree.x][nearestTree.z]) then
                 nearestTree.x = x
                 nearestTree.z = z
             end
         end
     end
+
+    print("x = " .. nearestTree.x .. " z = " .. nearestTree.z)
 
     if nearestTree.x and nearestTree.z then
         -- transfer to global coords
