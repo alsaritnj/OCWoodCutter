@@ -1,4 +1,4 @@
-sides = {}
+local sides = {}
 
 sides.bottom = 0
 sides.top = 1

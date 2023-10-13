@@ -1,4 +1,4 @@
-robot = {}
+local robot = {}
 
 function robot.turn()
     print("robot.turn")
@@ -11,3 +11,5 @@ end
 function robot.move()
     print("robot.move")
 end
+
+return robot;

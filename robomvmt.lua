@@ -1,16 +1,15 @@
 local sides = require("sides")
 local robot = require("robot")
+local vec = require("vectors")
 
 local robomvmt = {}
 
-robomvmt.x, robomvmt.y, robomvmt.z, robomvmt.dir = 0, 0, 0, sides.back
+robomvmt.position, robomvmt.dir = vectors.zero, sides.back
 
-function robomvmt.setCoords(x, y, z, dir)
-    robomvmt.x = x or 0
-    robomvmt.y = y or 0
-    robomvmt.z = z or 0
+function robomvmt.setCoords(vec, dir)
+    robomvmt.position = vec
     robomvmt.dir = dir or sides.back
-    return robomvmt.x, robomvmt.y, robomvmt.z
+    return robomvmt.position
 end
 
 function robomvmt.translate(x, y, z)
@@ -47,112 +46,44 @@ function robomvmt.turnRight()
 end
 
 local function breakBehind()
-    robomvmt.turnLeft()
-    robomvmt.turnLeft()
+    robot.turnAround()
     robot.swing(sides.front)
-    robomvmt.turnLeft()
-    robomvmt.turnLeft()
+    robot.turnAround()
+end
+
+local function step(dir, breakBlocks, translateDir)
+    local translateDir = translateDir or robomvmt.dir
+    local status, err = robot.move(sides[dir])
+    if not status then 
+        if breakBlocks then
+            robot.swing(sides[dir])
+        else
+            return false, i, err
+        end
+    end
+    robomvmt.translate(vectors.sides[translateDir])
+    return true
 end
 
 function robomvmt.forward(dist, breakBlocks)
     dist = math.abs(dist) or 1
     for i = 1, dist do
-        if robomvmt.dir == sides.back then
-            if not robot.move(sides.front) then 
-                if breakBlocks then
-                    robot.swing(sides.front)
-                else
-                    return false, i, "Path obstructed"
-                end
-            end
-            robomvmt.translate(0, 0, -1)
-        elseif robomvmt.dir == sides.right then
-            if not robot.move(sides.front) then
-                if breakBlocks then
-                    robot.swing(sides.front)
-                else
-                    return false, i, "Path obstructed"
-                end
-            end
-            robomvmt.translate(-1, 0, 0)
-        elseif robomvmt.dir == sides.front then
-            if not robot.move(sides.front) then 
-                if breakBlocks then
-                    robot.swing(sides.front)
-                else
-                    return false, i, "Path obstructed"
-                end
-            end
-            robomvmt.translate(0, 0, 1)
-        elseif robomvmt.dir == sides.left then
-            if not robot.move(sides.front) then 
-                if breakBlocks then
-                    robot.swing(sides.front)
-                else
-                    return false, i, "Path obstructed"
-                end
-            end
-            robomvmt.translate(1, 0, 0)
-        end
+        status, dist, err = step("front", breakBlocks)
+        if not status then return status, dist, err end
     end
     return true, dist
 end
 
 function robomvmt.back(dist, breakBlocks)
-    dist = math.abs(dist) or 1
-    for i = 1, dist do
-        if robomvmt.dir == sides.back then
-            if not robot.move(sides.back) then
-                if breakBlocks then
-                    breakBehind()
-                else
-                    return false, i, "Path obstructed"
-                end
-            end
-            robomvmt.translate(0, 0, 1)
-        elseif robomvmt.dir == sides.right then
-            if not robot.move(sides.back) then 
-                if breakBlocks then
-                    breakBehind()
-                else
-                    return false, i, "Path obstructed"
-                end
-            end
-            robomvmt.translate(1, 0, 0)
-        elseif robomvmt.dir == sides.front then
-            if not robot.move(sides.back) then 
-                if breakBlocks then
-                    breakBehind()
-                else
-                    return false, i, "Path obstructed"
-                end
-            end
-            robomvmt.translate(0, 0, -1)
-        elseif robomvmt.dir == sides.left then
-            if not robot.move(sides.back) then
-                if breakBlocks then
-                    breakBehind()
-                else
-                    return false, i, "Path obstructed"
-                end
-            end
-            robomvmt.translate(-1, 0, 0)
-        end
-    end
-    return true, dist
+    turnAround()
+    step("front", )
 end
 
 function robomvmt.up(dist, breakBlocks)
     dist = math.abs(dist) or 1
     for i = 1, dist do
-        if not robot.move(sides.top) then
-            if breakBlocks then
-                robot.swing(sides.top)
-            else
-                return false, i, "Path obstructed"
-            end
-        end
-        robomvmt.translate(0, 1, 0)
+        status, dist, err = step("up", breakBlocks, sides.up)
+        if not status then return status, dist, err end
     end
     return true, dist
 end
@@ -160,14 +91,8 @@ end
 function robomvmt.down(dist, breakBlocks)
     dist = math.abs(dist) or 1
     for i = 1, dist do
-        if not robot.move(sides.bottom) then
-            if breakBlocks then
-                robot.swing(sides.bottom)
-            else
-                return false, i, "Path obstructed"
-            end
-        end
-        robomvmt.translate(0, -1, 0)
+        status, dist, err = step("down", breakBlocks, sides.down)
+        if not status then return status, dist, err end
     end
     return true, dist
 end
@@ -215,6 +140,11 @@ function robomvmt.goCoords(x, y, z, order, breakBlocks)
         end
     end
     return true
+end
+
+function robomvmt.goRelative(dX, dY, dZ, order, breakBlocks)
+    dX, dY, dZ = dX + robomvmt.x, dY + robomvmt.y, dZ + robomvmt.z
+    return robomvmt.goCoords(dX, dY, dZ, order, breakBlocks)
 end
 
 return robomvmt
