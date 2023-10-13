@@ -7,6 +7,15 @@ local settings = require("settings")
 
 local distMatrix = {}
 
+if settings.area.x > settings.geolyzerRange * 2 or
+settings.area.y > settings.geolyzerRange * 2 or
+settings.area.x < 1 or settings.area.y < 1 then
+    print("error: unavaliable area")
+    return
+end
+
+settings.areaCenter = vectors.new2d(math.ceil(settings.area.x / 2), math.ceil(settings.area.y / 2))
+movement.setCoords(settings.startPosition)
 
 -- startUp(robotCords, robotDir, areaWidth, areaHeight)
 -- while true do
@@ -21,17 +30,9 @@ local distMatrix = {}
 
 -- tests:
 
-if settings.area.x > settings.geolyzerRange * 2 or
-settings.area.y > settings.geolyzerRange * 2 or
-settings.area.x < 1 or settings.area.y < 1 then
-    print("error: unavaliable area")
-    return
-end
-
-settings.areaCenter = vectors.new2d(math.ceil(settings.area.x / 2), math.ceil(settings.area.y / 2))
 
 distMatrix = dm.new(settings.areaCenter)
-local trees = trees.getTreesInArea(movement.position, settings)
+local trees = trees.getNearestTree(movement.position, settings)
 print(movement.position.x)
 print(movement.position.z)
 print(settings.areaCenter.x)

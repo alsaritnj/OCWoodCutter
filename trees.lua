@@ -1,3 +1,5 @@
+local vectors = require("lib/vectors")
+
 local treeLib = {}
 
 function treeLib.getTrees()
@@ -9,9 +11,10 @@ function treeLib.getTrees()
 
     trees[0] = {}
     trees[0][-1] = 1
-    trees[0][3] = 1
+    trees[0][1] = 1
     trees[0][10] = 1
-    --trees[3] = {}
+    trees[3] = {}
+    trees[3][3] = 1
     --trees[6] = {}
     return trees
 end
@@ -40,7 +43,7 @@ function treeLib.getTreesInArea(position, settings)
 end
 
 function treeLib.getNearestTree(position, settings)
-    local trees = getTreesInArea(position, settings)
+    local trees = treeLib.getTreesInArea(position, settings)
 
     local nearestTree = nil
     for x, rows in pairs(trees) do
