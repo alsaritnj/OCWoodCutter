@@ -17,4 +17,6 @@ function robot.move()
     return true
 end
 
+robot.debug = {} -- TODO: Fill this with tests
+
 return robot;

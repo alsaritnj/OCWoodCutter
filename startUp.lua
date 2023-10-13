@@ -6,6 +6,5 @@ function startUp(pos, dir, areaWidth, areaHeight)
     movement.setCoords(pos, dir)
     area.width = areaWidth
     area.height = areaHeight
-    area.widthCenter = math.ceil(areaWidth / 2)
-    area.heightCenter = math.ceil(areaHeight / 2)
+    settings.areaCenter = vectors.new2d(math.ceil(settings.area.x / 2), math.ceil(settings.area.y / 2))
 end

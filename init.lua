@@ -1,21 +1,22 @@
-movement = require("robomvmt")
-require("treeSearch")
-require("startUp")
-require("fillDistMatrix")
+local movement = require("/lib/robomvmt")
+local vectors = require("/lib/vectors")
 
-treeGrowingWaitingTime = 10;
-geolyserMaxRange = 5 -- default 32
-area = {}
-distMatrix = {}
+local trees = require("trees")
+local dm = require("distMatrix")
+local settings = require("settings")
+
+require("startUp")
+
+local distMatrix = {}
 
 function main()
     startUp(robotCords, robotDir, areaWidth, areaHeight)
     while true do
-        trea = getNearestTree()
-        if trea then
-            cutTheTree(trea)
+        tree = getNearestTree()
+        if tree then
+            cutTree(tree)
         else
-            goToCenter()
+            movement.goCoords(vectors.zero)
             os.sleep(treeGrowingWaitingTime)
         end
     end
@@ -24,11 +25,11 @@ end
 --main()
 -- tests:
 startUp(0, 0, 0, 0, 10, 10)
-fillDistMatrix()
+distMatrix = dm.new(settings.areaCenter)
 local trees = getTreesInArea()
 print(movement.position.x)
 print(movement.position.z)
-print(area.widthCenter)
+print(settings.areaCenter)
 for x, rows in pairs(trees) do
     for z, _ in pairs(rows) do
         print("x = " .. x .. " z = " .. z)

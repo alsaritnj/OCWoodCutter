@@ -1,6 +1,6 @@
-local sides = require("sides")
-local robot = require("robot")
-local vec = require("vectors")
+local sides = require("/lib/sides")
+local robot = require("/lib/robot")
+local vec = require("/lib/vectors")
 
 local robomvmt = {}
 
@@ -41,12 +41,6 @@ function robomvmt.turnRight()
         if robot.turn(true) then robomvmt.dir = sides.front return true, robomvmt.dir end
     end
     return false
-end
-
-local function breakBehind()
-    robot.turnAround()
-    robot.swing(sides.front)
-    robot.turnAround()
 end
 
 local function step(dir, breakBlocks, translateDir)
@@ -108,27 +102,20 @@ function robomvmt.goCoords(pos, order, breakBlocks)
     if order:len() ~= 3 then return false, "Order should be of length 3" end
     local delta = vec.sub(pos, robomvmt.position)
     for dir in order:gmatch("%w") do
-        if dir == "x" then
-            if dX > 0 then
-                robomvmt.align(sides.left)
-                robomvmt.forward(dX, breakBlocks)
-            elseif dX < 0 then
-                robomvmt.align(sides.right)
-                robomvmt.forward(dX, breakBlocks)
-            end
-        elseif dir == "y" then
-            if dY > 0 then
+        local dist = delta[dir]
+        if dir == "y" then
+            if dist > 0 then
                 robomvmt.up(dY, breakBlocks)
-            elseif dY < 0 then
+            elseif dist < 0 then
                 robomvmt.down(dY, breakBlocks)
             end
-        elseif dir == "z" then
-            if dZ > 0 then
-                robomvmt.align(sides.front)
-                robomvmt.forward(dZ, breakBlocks)
-            elseif dZ < 0 then
-                robomvmt.align(sides.back)
-                robomvmt.forward(dZ, breakBlocks)
+        else
+            if dist > 0 then
+                robomvmt.align(sides[dir])
+                robomvmt.forward(d, breakBlocks)
+            elseif dist < 0 then
+                robomvmt.align(sides.["neg"..dir])
+                robomvmt.forward(d, breakBlocks)
             end
         end
     end
