@@ -9,20 +9,18 @@ require("startUp")
 
 local distMatrix = {}
 
-function main()
-    startUp(robotCords, robotDir, areaWidth, areaHeight)
-    while true do
-        tree = getNearestTree()
-        if tree then
-            cutTree(tree)
-        else
-            movement.goCoords(vectors.zero)
-            os.sleep(treeGrowingWaitingTime)
-        end
-    end
-end
 
---main()
+-- startUp(robotCords, robotDir, areaWidth, areaHeight)
+-- while true do
+--     tree = getNearestTree()
+--     if tree then
+--         cutTree(tree)
+--     else
+--         movement.goCoords(vectors.zero)
+--         os.sleep(treeGrowingWaitingTime)
+--     end
+-- end
+
 -- tests:
 startUp(0, 0, 0, 0, 10, 10)
 distMatrix = dm.new(settings.areaCenter)
