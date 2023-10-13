@@ -1,36 +1,12 @@
 movement = require("robomvmt")
 require("treeSearch")
+require("startUp")
+require("fillDistMatrix")
 
 treeGrowingWaitingTime = 10;
 geolyserMaxRange = 5 -- default 32
 area = {}
 distMatrix = {}
-
-function startUp(x, y, z, dir, areaWidth, areaHeight)
-    if areaWidth > geolyserMaxRange * 2 or areaHeight > geolyserMaxRange * 2 or areaWidth < 1 or areaHeight < 1 then
-        print("error: unavaliable area")
-    end
-
-    movement.setCoords(x, y, z, dir)
-    area.width = areaWidth
-    area.height = areaHeight
-    area.widthCenter = math.ceil(areaWidth / 2)
-    area.heightCenter = math.ceil(areaHeight / 2)
-end
-
-function fillDistMatrix()
-    for x = -area.widthCenter, area.widthCenter do
-        distMatrix[x] = {}
-        for z = -area.heightCenter, area.heightCenter do
-            --[[ "|x| + |z|" is simplified manhattan dist
-            since we calculating distance relativly to center(which relative coords is 0, 0),
-            the formula looks like "|0 - x| + | 0 - z|" --]]
-            distMatrix[x][z] = math.abs(x) + math.abs(z)
-        end
-    end
-end
-
-
 
 function main()
     startUp(robotCords, robotDir, areaWidth, areaHeight)
@@ -46,6 +22,7 @@ function main()
 end
 
 --main()
+-- tests:
 startUp(0, 0, 0, 0, 10, 10)
 fillDistMatrix()
 local trees = getTreesInArea()
