@@ -4,19 +4,17 @@ local vec = require("vectors")
 
 local robomvmt = {}
 
-robomvmt.position, robomvmt.dir = vectors.zero, sides.back
+robomvmt.position, robomvmt.dir = vec.zero, sides.back
 
-function robomvmt.setCoords(vec, dir)
+function robomvmt.setCoords(pos, dir)
     robomvmt.position = vec
     robomvmt.dir = dir or sides.back
     return robomvmt.position
 end
 
-function robomvmt.translate(x, y, z)
-    robomvmt.x = robomvmt.x + x
-    robomvmt.y = robomvmt.y + y
-    robomvmt.z = robomvmt.z + z
-    return robomvmt.x, robomvmt.y, robomvmt.z
+function robomvmt.translate(a)
+    robomvmt.position = vec.add(robomvmt.position, a)
+    return robomvmt.position
 end
 
 function robomvmt.turnLeft()
@@ -34,13 +32,13 @@ end
 
 function robomvmt.turnRight()
     if robomvmt.dir == sides.back then
-        if robot.turn(false) then robomvmt.dir = sides.left return true, robomvmt.dir end
+        if robot.turn(true) then robomvmt.dir = sides.left return true, robomvmt.dir end
     elseif robomvmt.dir == sides.right then
-        if robot.turn(false) then robomvmt.dir = sides.back return true, robomvmt.dir end
+        if robot.turn(true) then robomvmt.dir = sides.back return true, robomvmt.dir end
     elseif robomvmt.dir == sides.front then
-        if robot.turn(false) then robomvmt.dir = sides.right return true, robomvmt.dir end
+        if robot.turn(true) then robomvmt.dir = sides.right return true, robomvmt.dir end
     elseif robomvmt.dir == sides.left then
-        if robot.turn(false) then robomvmt.dir = sides.front return true, robomvmt.dir end
+        if robot.turn(true) then robomvmt.dir = sides.front return true, robomvmt.dir end
     end
     return false
 end
@@ -61,7 +59,7 @@ local function step(dir, breakBlocks, translateDir)
             return false, i, err
         end
     end
-    robomvmt.translate(vectors.sides[translateDir])
+    robomvmt.translate(vec.sides[translateDir])
     return true
 end
 
@@ -72,11 +70,6 @@ function robomvmt.forward(dist, breakBlocks)
         if not status then return status, dist, err end
     end
     return true, dist
-end
-
-function robomvmt.back(dist, breakBlocks)
-    turnAround()
-    step("front", )
 end
 
 function robomvmt.up(dist, breakBlocks)
@@ -110,10 +103,10 @@ function robomvmt.align(dir)
     return true
 end
 
-function robomvmt.goCoords(x, y, z, order, breakBlocks)
+function robomvmt.goCoords(pos, order, breakBlocks)
     order = order or "xyz"
     if order:len() ~= 3 then return false, "Order should be of length 3" end
-    local dX, dY, dZ = x - robomvmt.x, y - robomvmt.y, z - robomvmt.z
+    local delta = vec.sub(pos, robomvmt.position)
     for dir in order:gmatch("%w") do
         if dir == "x" then
             if dX > 0 then
@@ -142,9 +135,9 @@ function robomvmt.goCoords(x, y, z, order, breakBlocks)
     return true
 end
 
-function robomvmt.goRelative(dX, dY, dZ, order, breakBlocks)
-    dX, dY, dZ = dX + robomvmt.x, dY + robomvmt.y, dZ + robomvmt.z
-    return robomvmt.goCoords(dX, dY, dZ, order, breakBlocks)
+function robomvmt.goRelative(delta, order, breakBlocks)
+    delta = vec.add(delta, robomvmt.position)
+    return robomvmt.goCoords(delta, order, breakBlocks)
 end
 
 return robomvmt
