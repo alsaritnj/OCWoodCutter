@@ -9,11 +9,11 @@ function vectors.new2d(x, y)
     return {x = x, y = y}
 end
 
-vectors.front = vectors.new3d(0, 0, 1),
-vectors.back = vectors.new3d(0, 0, -1),
-vectors.left = vectors.new3d(1, 0, 0),
-vectors.right = vectors.new3d(-1, 0, 0),
-vectors.up = vectors.new3d(0, 1, 0),
+vectors.front = vectors.new3d(0, 0, 1)
+vectors.back = vectors.new3d(0, 0, -1)
+vectors.left = vectors.new3d(1, 0, 0)
+vectors.right = vectors.new3d(-1, 0, 0)
+vectors.up = vectors.new3d(0, 1, 0)
 vectors.down = vectors.new3d(0, -1, 0)
 
 vectors.x = vectors.left
@@ -27,6 +27,7 @@ vectors.zero = vectors.new3d(0, 0, 0)
 vectors.one = vectors.new3d(1, 1, 1)
 
 for k, v in pairs(sides) do
+    vectors.sides = {}
     vectors.sides[v] = vectors[k]
 end
 

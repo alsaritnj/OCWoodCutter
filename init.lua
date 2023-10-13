@@ -22,12 +22,12 @@ local distMatrix = {}
 -- end
 
 -- tests:
-startUp(0, 0, 0, 0, 10, 10)
+startUp({x = 0,  y = 0, z = 0}, 0, 10, 10, settings, movement)
 distMatrix = dm.new(settings.areaCenter)
-local trees = getTreesInArea()
+local trees = trees.getTreesInArea(movement.position, settings)
 print(movement.position.x)
 print(movement.position.z)
-print(settings.areaCenter)
+print(settings.areaCenter.x)
 for x, rows in pairs(trees) do
     for z, _ in pairs(rows) do
         print("x = " .. x .. " z = " .. z)

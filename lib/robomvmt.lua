@@ -7,7 +7,7 @@ local robomvmt = {}
 robomvmt.position, robomvmt.dir = vec.zero, sides.back
 
 function robomvmt.setCoords(pos, dir)
-    robomvmt.position = vec
+    robomvmt.position = pos
     robomvmt.dir = dir or sides.back
     return robomvmt.position
 end
@@ -114,7 +114,7 @@ function robomvmt.goCoords(pos, order, breakBlocks)
                 robomvmt.align(sides[dir])
                 robomvmt.forward(d, breakBlocks)
             elseif dist < 0 then
-                robomvmt.align(sides.["neg"..dir])
+                robomvmt.align(sides["neg"..dir])
                 robomvmt.forward(d, breakBlocks)
             end
         end

@@ -1,6 +1,6 @@
-local trees = {}
+local treeLib = {}
 
-function trees.getTrees()
+function treeLib.getTrees()
     local trees = {}
     trees[-7] = {}
     trees[-7][1] = 1
@@ -16,16 +16,16 @@ function trees.getTrees()
     return trees
 end
 
-function trees.getTreesInArea()
-    local trees = getTrees()
+function treeLib.getTreesInArea(position, settings)
+    local trees = treeLib.getTrees()
     local treesInArea = {}
 
     -- calculating either trees zone xor scanned zone is closer. then converting it to relative coord
-    local xMin = math.max(movement.position.x - geolyserMaxRange, 0) - settings.areaCenter.x
-    local zMin = math.max(movement.position.z - geolyserMaxRange, 0) - settings.areaCenter.y
+    local xMin = math.max(position.x - settings.geolyzerRange, 0) - settings.areaCenter.x
+    local zMin = math.max(position.z - settings.geolyzerRange, 0) - settings.areaCenter.y
 
-    local xMax = math.min(movement.position.x + geolyserMaxRange, settings.area.width) - settings.areaCenter.x
-    local zMax = math.min(movement.position.z + geolyserMaxRange, settings.area.height) - settings.areaCenter.y
+    local xMax = math.min(position.x + settings.geolyzerRange, settings.area.width) - settings.areaCenter.x
+    local zMax = math.min(position.z + settings.geolyzerRange, settings.area.height) - settings.areaCenter.y
 
     for x, rows in pairs(trees) do
         treesInArea[x] = {}
@@ -39,8 +39,8 @@ function trees.getTreesInArea()
     return treesInArea
 end
 
-function trees.getNearestTree()
-    local trees = getTreesInArea()
+function treeLib.getNearestTree(position, settings)
+    local trees = getTreesInArea(position, settings)
 
     local nearestTree = nil
     for x, rows in pairs(trees) do
@@ -51,22 +51,13 @@ function trees.getNearestTree()
             end
         end
     end
-<<<<<<< HEAD:treeSearch.lua
-
-    if nearestTree.x and nearestTree.z then
-        -- transfer to global coords
-        nearestTree.x = nearestTree.x + movement.x
-        nearestTree.z = nearestTree.z + movement.z
-
-=======
     
     if nearestTree then
         -- transform to origin coords
-        nearestTree = vectors.slice(vectors.add(nearestTree, movement.position))
->>>>>>> 2761c1b921cdf8e84f37d1b7c4a95e7bc56d790d:trees.lua
+        nearestTree = vectors.slice(vectors.add(nearestTree, position))
         return nearestTree
     end 
     return nil, "No trees in specified area"
 end
 
-return trees
+return treeLib
