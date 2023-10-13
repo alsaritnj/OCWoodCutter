@@ -26,8 +26,8 @@ end
 startUp(0, 0, 0, 0, 10, 10)
 fillDistMatrix()
 local trees = getTreesInArea()
-print(movement.x)
-print(movement.z)
+print(movement.position.x)
+print(movement.position.z)
 print(area.widthCenter)
 for x, rows in pairs(trees) do
     for z, _ in pairs(rows) do
