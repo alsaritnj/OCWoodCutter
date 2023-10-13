@@ -51,8 +51,7 @@ function getNearestTree()
         end
     end
 
-    
-    if not nearestTree.x and not nearestTree.z then
+    if nearestTree.x and nearestTree.z then
         -- transfer to global coords
         nearestTree.x = nearestTree.x + movement.x
         nearestTree.z = nearestTree.z + movement.z
