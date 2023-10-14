@@ -26,13 +26,13 @@ function treeLib.getTreesInArea(position, settings)
     local treesInArea = {}
 
     -- calculating either trees zone xor scanned zone is closer. then converting it to relative coord
-    local minBoarder = coordsTransform.geolyzerRelative(
+    local minBoarder = coordsTransform.geolyzerRelative(vectors.new2d(
         math.max(position.x - settings.geolyzerRange, 0),
-        math.max(position.y - settings.geolyzerRange, 0)
+        math.max(position.y - settings.geolyzerRange, 0))
     )
-    local maxBoarder = coordsTransform.geolyzerRelative(
+    local maxBoarder = coordsTransform.geolyzerRelative(vectors.new2d(
         math.min(position.x + settings.geolyzerRange, settings.area.x),
-        math.min(position.y + settings.geolyzerRange, settings.area.y)
+        math.min(position.y + settings.geolyzerRange, settings.area.y))
     )
 
     for x, rows in pairs(trees) do
