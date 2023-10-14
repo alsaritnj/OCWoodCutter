@@ -18,6 +18,11 @@ local function getMaxBoarder(position)
     )
 end
 
+local function isInArea(vector2d, minBoarder, maxBoarder)
+    return (vector2d.x >= minBoarder.x and vector2d.x <= maxBoarder.x) and 
+            (vector2d.y >= minBoarder.y and vector2d.y <= maxBoarder.x)
+end
+
 function treeLib.getTrees()
     local trees = {}
     trees[-7] = {}
@@ -45,7 +50,7 @@ function treeLib.getTreesInArea(position, settings)
 
     for x, rows in pairs(trees) do
         for y, _ in pairs(rows) do
-            if (x >= minBoarder.x and x <= maxBoarder.x) and (y >= minBoarder.y and y <= maxBoarder.x) then
+            if isInArea(vectors.new2d(x, y), minBoarder, maxBoarder) then
                 table.insert(treesInArea, vectors.new2d(x, y))
             end
         end
