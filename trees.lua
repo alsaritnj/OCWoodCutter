@@ -1,5 +1,6 @@
 local vectors = require("lib/vectors")
-
+local sides = require("/lib/sides")
+local robot = require("robot")
 local treeLib = {}
 
 function treeLib.getTrees()
@@ -61,6 +62,18 @@ function treeLib.getNearestTree(position, settings)
         return nearestTree
     end 
     return nil, "No trees in specified area"
+end
+
+function treeLib.cut(movement)
+    local h = movement.position.y
+    while robot.detect(sides.front) do
+        movement.up(1, true)
+    end
+    for i = movement.position.y, h + 1, -1 do
+        movement.down(1, false)
+        robot.swing(sides.front)
+    end
+    return true
 end
 
 return treeLib
