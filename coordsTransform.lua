@@ -4,10 +4,10 @@ local settings = require("settings")
 local coordsTransform = {}
 
 -- translate coords to robot relative
-function coordsTransform.robotRelative(coords)
+function coordsTransform.robotRelative(coords, position)
     return vectors.new2d(
-        math.abs(coords.x) - math.abs(movement.x), 
-        math.abs(coords.y) - math.abs(movement.y)
+        math.abs(coords.x) - math.abs(position.x), 
+        math.abs(coords.y) - math.abs(position.y)
     )
 end
 
