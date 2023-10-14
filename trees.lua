@@ -43,14 +43,14 @@ function treeLib.getTreesInArea(position, settings)
     return treesInArea
 end
 
-function treeLib.getNearestTree(position, settings)
+function treeLib.getNearestTree(position, settings, distMatrix)
     local trees = treeLib.getTreesInArea(position, settings)
 
     local nearestTree = nil
     for x, rows in pairs(trees) do
         for z, _ in pairs(rows) do
             if (not nearestTree or not nearestTree.x or not nearestTree.z) 
-                or (distMatrix[x][z] < distMatrix[nearestTree.x][nearestTree.z]) then
+                or (distMatrix.matrix[x][z] < distMatrix.matrix[nearestTree.x][nearestTree.z]) then
                 nearestTree = vectors.new3d(x, 0, z)
             end
         end
