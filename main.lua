@@ -1,9 +1,9 @@
-local movement = require("/lib/robomvmt.lua")
-local vectors = require("/lib/vectors.lua")
+local movement = require("/lib/robomvmt")
+local vectors = require("/lib/vectors")
 
-local treelib = require("trees.lua")
-local dm = require("distMatrix.lua")
-local settings = require("settings.lua")
+local treelib = require("trees")
+local dm = require("distMatrix")
+local settings = require("settings")
 
 local distMatrix = {}
 
