@@ -4,6 +4,20 @@ local robot = require("lib/robot")
 local coordsTransform = require("coordsTransform")
 local treeLib = {}
 
+local function getMinBoarder(position)
+    return coordsTransform.geolyzerRelative(vectors.new2d(
+        math.max(position.x - settings.geolyzerRange, 0),
+        math.max(position.y - settings.geolyzerRange, 0))
+    )
+end
+
+local function getMaxBoarder(position)
+    return coordsTransform.geolyzerRelative(vectors.new2d(
+        math.min(position.x + settings.geolyzerRange, settings.area.x),
+        math.min(position.y + settings.geolyzerRange, settings.area.y))
+    )
+end
+
 function treeLib.getTrees()
     local trees = {}
     trees[-7] = {}
@@ -26,14 +40,8 @@ function treeLib.getTreesInArea(position, settings)
     local treesInArea = {}
 
     -- calculating either trees zone xor scanned zone is closer. then converting it to relative coord
-    local minBoarder = coordsTransform.geolyzerRelative(vectors.new2d(
-        math.max(position.x - settings.geolyzerRange, 0),
-        math.max(position.y - settings.geolyzerRange, 0))
-    )
-    local maxBoarder = coordsTransform.geolyzerRelative(vectors.new2d(
-        math.min(position.x + settings.geolyzerRange, settings.area.x),
-        math.min(position.y + settings.geolyzerRange, settings.area.y))
-    )
+    local minBoarder = getMinBoarder(position)
+    local maxBoarder = getMaxBoarder(position)
 
     for x, rows in pairs(trees) do
         for y, _ in pairs(rows) do
