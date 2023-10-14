@@ -33,9 +33,7 @@ print(movement.position.x)
 print(movement.position.z)
 print(settings.areaCenter.x)
 
-for x, rows in pairs(trees) do
-    for z, _ in pairs(rows) do
-        print("x = " .. x .. " z = " .. z)
-    end
+for i, tree in pairs(trees) do
+    print("x = " .. tree.x .. " z = " .. tree.y)
 end
-treelib.cut(movement)
+--treelib.cut(movement)
