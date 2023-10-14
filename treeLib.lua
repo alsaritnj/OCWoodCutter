@@ -57,8 +57,8 @@ function treeLib.getTreesInArea(position)
     return treesInArea
 end
 
-function treeLib.getNearestTree(position, settings, distMatrix)
-    local trees = treeLib.getTreesInArea(position, settings)
+function treeLib.getNearestTree(position, distMatrix)
+    local trees = treeLib.getTreesInArea(position)
 
     local nearestTree = nil
     for x, rows in pairs(trees) do
