@@ -1,6 +1,7 @@
 local vectors = require("lib/vectors")
 local sides = require("/lib/sides")
 local robot = require("lib/robot")
+local coordsTransform = require("coordsTransform")
 local treeLib = {}
 
 function treeLib.getTrees()
@@ -25,16 +26,19 @@ function treeLib.getTreesInArea(position, settings)
     local treesInArea = {}
 
     -- calculating either trees zone xor scanned zone is closer. then converting it to relative coord
-    local xMin = math.max(position.x - settings.geolyzerRange, 0) - settings.areaCenter.x
-    local zMin = math.max(position.z - settings.geolyzerRange, 0) - settings.areaCenter.y
-
-    local xMax = math.min(position.x + settings.geolyzerRange, settings.area.x) - settings.areaCenter.x
-    local zMax = math.min(position.z + settings.geolyzerRange, settings.area.y) - settings.areaCenter.y
+    local minBoarder = coordsTransform.geolyzerRelative(
+        math.max(position.x - settings.geolyzerRange, 0),
+        math.max(position.z - settings.geolyzerRange, 0)
+    )
+    local maxBoarder = coordsTransform.geolyzerRelative(
+        math.min(position.x + settings.geolyzerRange, settings.area.x),
+        math.min(position.z + settings.geolyzerRange, settings.area.y)
+    )
 
     for x, rows in pairs(trees) do
         treesInArea[x] = {}
         for z, _ in pairs(rows) do
-            if (x >= xMin and x <= xMax) and (z >= zMin and z <= zMax) then
+            if (x >= minBoarder.x and x <= maxBoarder.x) and (z >= minBoarder.y and z <= maxBoarder.x) then
                 treesInArea[x][z] = 1
             end
         end
