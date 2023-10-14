@@ -1,6 +1,6 @@
 local vectors = require("lib/vectors")
 local sides = require("/lib/sides")
-local robot = require("robot")
+local robot = require("lib/robot")
 local treeLib = {}
 
 function treeLib.getTrees()
