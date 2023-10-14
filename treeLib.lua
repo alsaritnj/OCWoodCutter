@@ -2,6 +2,7 @@ local vectors = require("lib/vectors")
 local sides = require("/lib/sides")
 local robot = require("lib/robot")
 local coordsTransform = require("coordsTransform")
+local settings = require("settings")
 local treeLib = {}
 
 local function getMinBoarder(position)
@@ -39,7 +40,7 @@ function treeLib.getTrees()
     return trees
 end
 
-function treeLib.getTreesInArea(position, settings)
+function treeLib.getTreesInArea(position)
     local trees = treeLib.getTrees()
     local treesInArea = {}
 
