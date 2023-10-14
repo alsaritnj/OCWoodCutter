@@ -30,12 +30,12 @@ movement.setCoords(settings.startPosition)
 -- tests:
 
 
-local trees = treelib.getTreesInArea(movement.position, settings, distMatrix)
+local tree = treelib.getNearestTree(movement.position, distMatrix)
 print(movement.position.x)
 print(movement.position.z)
 print(settings.areaCenter.x)
-
-for i, tree in pairs(trees) do
-    print("x = " .. tree.x .. " z = " .. tree.y)
-end
+print("x = " .. tree.x .. " z = " .. tree.y)
+--for i, tree in pairs(trees) do
+--    print("x = " .. tree.x .. " z = " .. tree.y)
+--end
 --treelib.cut(movement)
