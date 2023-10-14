@@ -38,7 +38,7 @@ function treeLib.getTreesInArea(position, settings)
     for x, rows in pairs(trees) do
         for y, _ in pairs(rows) do
             if (x >= minBoarder.x and x <= maxBoarder.x) and (y >= minBoarder.y and y <= maxBoarder.x) then
-                table.inser(treesInArea, vectors.new2d(x, y))
+                table.insert(treesInArea, vectors.new2d(x, y))
             end
         end
     end
