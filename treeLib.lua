@@ -60,22 +60,21 @@ end
 function treeLib.getNearestTree(position, distMatrix)
     local trees = treeLib.getTreesInArea(position)
 
-    local nearestTree = nil
-    for x, rows in pairs(trees) do
-        for z, _ in pairs(rows) do
-            if (not nearestTree or not nearestTree.x or not nearestTree.z) 
-                or (distMatrix.matrix[x][z] < distMatrix.matrix[nearestTree.x][nearestTree.z]) then
-                nearestTree = vectors.new3d(x, 0, z)
-            end
+    local nearestTree = trees[1]
+
+    if(not nearestTree) or (not nearestTree.x) or (not nearestTree.y) then
+        return nil
+    end
+
+    nearestTree = coordsTransform.robotRelative(nearestTree, position)
+
+    for _, tree in pairs(trees) do
+        tree = coordsTransform.robotRelative(tree, position)
+        if (distMatrix.matrix[tree.x][tree.y] < distMatrix.matrix[nearestTree.x][nearestTree.y]) then
+            nearestTree = tree
         end
     end
-    
-    if nearestTree then
-        -- transform to origin coords
-        nearestTree = vectors.slice(vectors.add(nearestTree, position))
-        return nearestTree
-    end 
-    return nil, "No trees in specified area"
+    return coordsTransform.robotGlobal(nearestTree, position)
 end
 
 function treeLib.cut(movement)
