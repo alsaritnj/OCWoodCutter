@@ -15,6 +15,8 @@ settings.areaCenter = vectors.new2d(math.ceil(settings.area.x / 2), math.ceil(se
 
 distMatrix.recalculate(settings.areaCenter)
 
+movement.setCoords(settings.startPosition)
+
 -- while true do
 --     tree = getNearestTree()
 --     if tree then
