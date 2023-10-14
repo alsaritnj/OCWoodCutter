@@ -24,19 +24,18 @@ local function isInArea(vector2d, minBoarder, maxBoarder)
 end
 
 function treeLib.getTrees()
-    local trees = {}
-    trees[-7] = {}
-    trees[-7][1] = 1
-    trees[-7][6] = 1
-    trees[-7][14] = 1
+    local trees = {
+        vectors.new2d(-7, 1),
+        vectors.new2d(-7, 6),
+        vectors.new2d(-7, 1),
 
-    trees[0] = {}
-    trees[0][-1] = 1
-    trees[0][1] = 1
-    trees[0][10] = 1
-    trees[3] = {}
-    trees[3][3] = 1
-    --trees[6] = {}
+        vectors.new2d(0, 1),
+        vectors.new2d(0, -1),
+        vectors.new2d(0, 30),
+
+        vectors.new2d(3, 2)
+    }
+    
     return trees
 end
 
@@ -48,11 +47,9 @@ function treeLib.getTreesInArea(position, settings)
     local minBoarder = coordsTransform.geolyzerRelative(getMinBoarder(position))
     local maxBoarder = coordsTransform.geolyzerRelative(getMaxBoarder(position))
 
-    for x, rows in pairs(trees) do
-        for y, _ in pairs(rows) do
-            if isInArea(vectors.new2d(x, y), minBoarder, maxBoarder) then
-                table.insert(treesInArea, vectors.new2d(x, y))
-            end
+    for i, tree in pairs(trees) do
+        if isInArea(tree, minBoarder, maxBoarder) then
+            table.insert(treesInArea, tree)
         end
     end
 
