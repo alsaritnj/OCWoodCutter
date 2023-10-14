@@ -1,43 +1,118 @@
-local movement = require("/lib/robomvmt")
-local vectors = require("/lib/vectors")
+do
+    function getComponent(name)
+        return component.proxy(component.list(name)())
+    end
 
-local trees = require("trees")
-local dm = require("distMatrix")
-local settings = require("settings")
+    local eeprom = getComponent("eeprom")
+    local fs = component.proxy(eeprom.getData())
+    
+    local gpu = getComponent("gpu")
+    local screen = getComponent("screen")
+    gpu.bind(screen.address)
+    local rx, ry = gpu.getResolution()
+    
+    local line, cg = 1, 1
+    local callstack = {"/init.lua"}
+    local lc = ""
 
-local distMatrix = {}
+    function readall(fp)
+        local str = ""
+        while true do
+            v = fs.read(fp, 128)
+            if not v then break end
+            str = str..v
+        end
+        return str
+    end
 
-if settings.area.x > settings.geolyzerRange * 2 or
-settings.area.y > settings.geolyzerRange * 2 or
-settings.area.x < 1 or settings.area.y < 1 then
-    print("error: unavaliable area")
-    return
-end
+    function table.str(tbl, sep)
+        str = ""
+        for _, v in pairs(tbl) do
+            str = str..v..sep
+        end
+        return str:sub(1, #str - #sep)
+    end
 
-settings.areaCenter = vectors.new2d(math.ceil(settings.area.x / 2), math.ceil(settings.area.y / 2))
-movement.setCoords(settings.startPosition)
+    function require(path)
+        table.insert(callstack, path)
+        local file, err = fs.open(path, "rb")
+        if not file then error(err) end
+        local code = readall(file)
+        fs.close(file)
+        lc = code
+        local f, err = load(code)
+        if f then
+            local ok, cb = pcall(f)
+            if ok then
+                table.remove(callstack, #callstack)
+                return cb
+            end
+            error("Runtime error: "..cb)
+        else
+            error(err)
+        end
+    end
 
--- startUp(robotCords, robotDir, areaWidth, areaHeight)
--- while true do
---     tree = getNearestTree()
---     if tree then
---         cutTree(tree)
---     else
---         movement.goCoords(vectors.zero)
---         os.sleep(treeGrowingWaitingTime)
---     end
--- end
+    local function splitByChunk(text, chunkSize)
+        local s = {}
+        text = tostring(text)
+        for i = 1, #text, chunkSize do
+            s[#s + 1] = text:sub(i, i + chunkSize - 1)
+        end
+        return s
+    end
 
--- tests:
+    function split(str, char)
+        local tbl = {}
+        str:gsub("[^"..char.."]+", function(x) tbl[#tbl+1]=x end)
+        return tbl
+    end
 
+    function clear() 
+        gpu.fill(1, 1, rx, ry, " ")
+    end
 
-distMatrix = dm.new(settings.areaCenter)
-local trees = trees.getNearestTree(movement.position, settings)
-print(movement.position.x)
-print(movement.position.z)
-print(settings.areaCenter.x)
-for x, rows in pairs(trees) do
-    for z, _ in pairs(rows) do
-        print("x = " .. x .. " z = " .. z)
+    function print(...)
+        local values = {...}
+        for _, data in ipairs(values) do
+            for i, v in ipairs(splitByChunk(data, 1)) do
+                if line == ry then
+                    line = 1
+                    cg = 1
+                    computer.pullSignal("touch")
+                    clear()
+                end
+                if cg > rx then
+                    line = line + 1
+                    cg = 1
+                end
+                if v == "\n" then
+                    line = line + 1
+                    cg = 1
+                else
+                    gpu.set(cg, line, v)
+                    cg = cg + 1
+                end
+            end
+        end
+        line = line + 1
+        cg = 1
+    end
+
+    function error(data, exception)
+        exception = exception or "panic"
+        data = exception..": "..debug.traceback()..": "..table.str(callstack, " -> ")..": "..data.."\n------- code dump -------\n"..lc
+        --data = split(data, "\n")
+        --data = splitByChunk(data, rx)
+        print(data)
+        while true do
+            computer.pullSignal()
+        end
+    end
+
+    require("/main.lua")
+    print("[program ended]")
+    while true do
+        computer.pullSignal()
     end
 end

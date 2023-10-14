@@ -1,4 +1,5 @@
-local sides = require("/lib/sides")
+local sides = require("lib/sides.lua")
+
 local vectors = {}
 
 function vectors.new3d(x, y, z)
