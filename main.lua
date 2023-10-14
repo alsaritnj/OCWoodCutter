@@ -1,7 +1,7 @@
 local movement = require("/lib/robomvmt")
 local vectors = require("/lib/vectors")
 
-local treelib = require("trees")
+local treelib = require("treeLib")
 local distMatrix = require("distMatrix")
 local settings = require("settings")
 
