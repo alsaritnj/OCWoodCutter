@@ -8,3 +8,5 @@ function geolyzer.scan()
     end
     return arr
 end
+
+return geolyzer
