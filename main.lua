@@ -29,13 +29,8 @@ movement.setCoords(settings.startPosition)
 
 -- tests:
 
+math.randomseed(os.clock())
+print("robot x = " .. movement.position.x .. "\trobot z = " .. movement.position.z .. "\tscaning zone = " .. settings.geolyzerRange .. "\tarea center = " .. settings.areaCenter.x)
 
 local tree = treelib.getNearestTree(movement.position, distMatrix)
-print(movement.position.x)
-print(movement.position.z)
-print(settings.areaCenter.x)
-print("x = " .. tree.x .. " z = " .. tree.y)
---for i, tree in pairs(trees) do
---    print("x = " .. tree.x .. " z = " .. tree.y)
---end
---treelib.cut(movement)
+print("nearest tree: x = " .. tree.x .. " z = " .. tree.y)
