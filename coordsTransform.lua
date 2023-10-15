@@ -19,13 +19,5 @@ function coordsTransform.robotGlobal(coords, position)
     )
 end
 
---[[ converts from global to geolyzer relative
-while global coords begins from 0;0, geolyzer's begins from -geolyzerRange]]--
-function coordsTransform.geolyzerRelative(globalCoords)
-    return vectors.new2d(
-        globalCoords.x - settings.geolyzerRange, 
-        globalCoords.y - settings.geolyzerRange
-    )
-end
 
 return coordsTransform
