@@ -44,9 +44,9 @@ function treeLib.getTreesInArea(position)
     local trees = treeLib.getTrees()
     local treesInArea = {}
 
-    -- calculating either trees zone xor scanned zone is closer. then converting it to relative coord
-    local minBoarder = coordsTransform.geolyzerRelative(getMinBoarder(position))
-    local maxBoarder = coordsTransform.geolyzerRelative(getMaxBoarder(position))
+    -- calculating either trees zone xor scanned zone is closer
+    local minBoarder = getMinBoarder(position)
+    local maxBoarder = getMaxBoarder(position)
 
     for i, tree in pairs(trees) do
         if isInArea(tree, minBoarder, maxBoarder) then
