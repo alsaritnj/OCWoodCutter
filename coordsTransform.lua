@@ -7,7 +7,7 @@ local coordsTransform = {}
 function coordsTransform.robotRelative(coords, position)
     return vectors.new2d(
         math.abs(coords.x) - math.abs(position.x), 
-        math.abs(coords.y) - math.abs(position.y)
+        math.abs(coords.y) - math.abs(position.z)
     )
 end
 
