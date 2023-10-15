@@ -25,13 +25,13 @@ local function isInArea(vector2d, minBoarder, maxBoarder)
             (vector2d.y >= minBoarder.y and vector2d.y <= maxBoarder.x)
 end
 
-function treeLib.getTrees()
+function treeLib.getTrees(position)
     local trees = {}
 
     for x = 0, settings.geolyzerRange * 2 do
         local scan = geolyzer.scan(x, -settings.geolyzerRange, 0, 1, settings.geolyzerRange * 2, 1)
         for y = 1, settings.geolyzerRange * 2 do
-            if scan[y] >= settings.woodMinHardness then
+            if scan[y] >= settings.woodMinHardness and (x ~= position.x and y - 1 ~= position.y) then
                 table.insert(trees, vectors.new2d(x, y - 1)) -- decrease y, because geolyzer returns array, in which eleemnts' ids begins with 1
             end
         end
@@ -47,7 +47,7 @@ function treeLib.getTrees()
 end
 
 function treeLib.getTreesInArea(position)
-    local trees = treeLib.getTrees()
+    local trees = treeLib.getTrees(position)
     local treesInArea = {}
 
     -- calculating either trees zone xor scanned zone is closer
