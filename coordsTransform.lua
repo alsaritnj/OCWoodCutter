@@ -15,7 +15,7 @@ end
 function coordsTransform.robotGlobal(coords, position)
     return vectors.new2d(
         coords.x + position.x, 
-        coords.y + position.y
+        coords.y + position.z
     )
 end
 
