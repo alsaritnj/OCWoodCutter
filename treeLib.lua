@@ -1,6 +1,7 @@
 local vectors = require("lib/vectors")
 local sides = require("/lib/sides")
 local robot = require("lib/robot")
+local geolyzer = require("lib/geolyzer")
 local coordsTransform = require("coordsTransform")
 local settings = require("settings")
 local treeLib = {}
@@ -25,17 +26,22 @@ local function isInArea(vector2d, minBoarder, maxBoarder)
 end
 
 function treeLib.getTrees()
-    local trees = {
-        vectors.new2d(-7, 1),
-        vectors.new2d(-7, 6),
-        vectors.new2d(-7, 1),
+    local trees = {}
 
-        vectors.new2d(0, 1),
-        vectors.new2d(0, -1),
-        vectors.new2d(0, 30),
+    for x = 0, settings.geolyzerRange * 2 do
+        local scan = geolyzer.scan(x, -settings.geolyzerRange, 0, 1, settings.geolyzerRange * 2, 1)
+        for y = 1, settings.geolyzerRange * 2 do
+            if scan[y] >= settings.woodMinHardness then
+                table.insert(trees, vectors.new2d(x, y - 1)) -- decrease y, because geolyzer returns array, in which eleemnts' ids begins with 1
+            end
+        end
+    end
 
-        vectors.new2d(3, 2)
-    }
+    --[[ 
+        There is cases in which geolyzer dont scan the part of area it can scan.
+        It happens when scaning radius is set to 32(maximum). Geolyzer can scan 65 lines(radius * 2 + (1 block on which robot stands)),
+        but it doesn't do it, because it always returns array of 64 blocks
+     ]]--
     
     return trees
 end
