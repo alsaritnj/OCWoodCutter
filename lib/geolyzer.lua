@@ -1,11 +1,15 @@
 local geolyzer = {}
+local settings = require("settings")
 
 function geolyzer.scan()
     local arr = {}
-    print("geolyzer.scan()")
-    for i = -32, 32 do
-        arr[i] = 0
+    
+    local str = "geolyzer: "
+    for i = -settings.geolyzerRange, settings.geolyzerRange do
+        arr[i] = tonumber(string.format("%.1f", (math.random(0, 15) / 10)))
+        str = str .. arr[i] .. "\t"
     end
+    print(str)
     return arr
 end
 
