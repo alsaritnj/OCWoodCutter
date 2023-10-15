@@ -8,14 +8,14 @@ local treeLib = {}
 local function getMinBoarder(position)
     return vectors.new2d(
         math.max(position.x - settings.geolyzerRange, 0),
-        math.max(position.y - settings.geolyzerRange, 0)
+        math.max(position.z - settings.geolyzerRange, 0)
     )
 end
 
 local function getMaxBoarder(position)
     return vectors.new2d(
         math.min(position.x + settings.geolyzerRange, settings.area.x),
-        math.min(position.y + settings.geolyzerRange, settings.area.y)
+        math.min(position.z + settings.geolyzerRange, settings.area.y)
     )
 end
 
